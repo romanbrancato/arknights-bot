@@ -37,7 +37,7 @@ launchAK = [
 # Commands for image recognition
 
 # Takes a screenshot of emulator window and saves it into the shared folder
-# Using this method so bot can run in background behind other windows despite many writes to disk
+# Using this method so bot can run in background behind other windows despite the writes to disk
 take_screenshot = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "adb",
@@ -45,6 +45,25 @@ take_screenshot = [
     "1",
     "--command",
     "shell screencap -p /mnt/shared/Pictures/ss.png"
+]
+
+# Commands for navigation
+
+swipe_left = [
+    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    "adb",
+    "--index",
+    "1",
+    "--command",
+    "shell input swipe 600 360 957 360 500"
+]
+swipe_right = [
+    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    "adb",
+    "--index",
+    "1",
+    "--command",
+    "shell input swipe 957 360 600 360 500"
 ]
 
 
@@ -98,3 +117,10 @@ def click_on_location(point: tuple):
         "shell input tap " + str(x) + " " + str(y)
     ]
     run_command(click, timeout=5)
+
+
+def scroll(direction):
+    if direction == "left":
+        run_command(swipe_left, timeout=5)
+    if direction == "right":
+        run_command(swipe_right, timeout=5)
