@@ -2,6 +2,7 @@ import subprocess
 from time import sleep
 
 # Commands to prepare LDplayer for bot
+
 closeLD = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "quitall"
@@ -36,7 +37,7 @@ launchAK = [
 # Commands for image recognition
 
 # Takes a screenshot of emulator window and saves it into the shared folder
-# Using this method so bot can run behind other windows
+# Using this method so bot can run in background behind other windows despite many writes to disk
 take_screenshot = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "adb",
@@ -78,5 +79,22 @@ def start_ld():
         run_command(command, timeout=5)
 
 
+def restart_ld():
+    start_ld()
+
+
 def capture_screen():
     run_command(take_screenshot, timeout=5)
+
+
+def click_on_location(point: tuple):
+    x, y = point
+    click = [
+        "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+        "adb",
+        "--index",
+        "1",
+        "--command",
+        "shell input tap " + str(x) + " " + str(y)
+    ]
+    run_command(click, timeout=5)
