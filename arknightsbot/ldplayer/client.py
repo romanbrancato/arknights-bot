@@ -106,7 +106,8 @@ def capture_screen():
     run_command(take_screenshot, timeout=5)
 
 
-def click_on_location(point: tuple):
+def click_on_location(point: tuple, delay=0):
+    sleep(delay)
     x, y = point
     click = [
         "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
