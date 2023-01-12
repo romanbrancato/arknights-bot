@@ -3,36 +3,56 @@ from time import sleep
 
 # Commands to prepare LDplayer for bot
 
-closeLD = [
+close_LD = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
-    "quitall"
-]
-configureLD = [
+    "quit",
+    "--name",
+    "Arknights_Bot"
+    ]
+configure_LD = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "modify",
-    "--index",
-    "1",
+    "--name",
+    "Arknights_Bot",
     "--resolution",
     "1280,720,240",
     "--cpu",
     "4",
     "--memory",
     "4096"
-]
-launchLD = [
+    ]
+launch_LD = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "launch",
-    "--index",
-    "1"
-]
-launchAK = [
+    "--name",
+    "Arknights_Bot"
+    ]
+launch_AK = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "runapp",
-    "--index",
-    "1",
+    "--name",
+    "Arknights_Bot",
     "--packagename",
     "com.YoStarEN.Arknights"
-]
+    ]
+
+is_ld_done_initializing = [
+    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    "adb",
+    "--name",
+    "Arknights_Bot",
+    "--command",
+    "shell getprop sys.boot_completed"
+    ]
+
+quit_AK = [
+    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    "killapp",
+    "--name",
+    "Arknights_Bot",
+    "--packagename",
+    "com.YoStarEN.Arknights"
+    ]
 
 # Commands for image recognition
 
@@ -41,30 +61,30 @@ launchAK = [
 take_screenshot = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "adb",
-    "--index",
-    "1",
+    "--name",
+    "Arknights_Bot",
     "--command",
     "shell screencap -p /mnt/shared/Pictures/ss.png"
-]
+    ]
 
 # Commands for navigation
 
 swipe_left = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "adb",
-    "--index",
-    "1",
+    "--name",
+    "Arknights_Bot",
     "--command",
     "shell input swipe 600 360 957 360 500"
-]
+    ]
 swipe_right = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "adb",
-    "--index",
-    "1",
+    "--name",
+    "Arknights_Bot",
     "--command",
     "shell input swipe 957 360 600 360 500"
-]
+    ]
 
 
 def run_command(args: list[str], timeout=0) -> str:
@@ -86,20 +106,36 @@ def run_command(args: list[str], timeout=0) -> str:
 
 def start_ld():
     commands = [
-        closeLD,
-        configureLD,
-        launchLD,
-        launchAK
+        close_LD,
+        configure_LD,
+        launch_LD,
+        launch_AK
     ]
     # App will not launch if LDplayer is not fully initialized
     for index, command in enumerate(commands):
+        # Added delay between close and launch command as getprop sys.boot_completed returns false positive if called
+        # too quickly after closing
+        if index == 1:
+            sleep(2)
         if index >= 3:
-            sleep(10)
+            while is_ld_initialized() is not True:
+                sleep(5)
         run_command(command, timeout=5)
 
 
-def restart_ld():
-    start_ld()
+def is_ld_initialized():
+    if subprocess.run(is_ld_done_initializing, capture_output=True, text=True).stdout.strip() == "1":
+        print("LD initialized, starting Arknights")
+        return True
+    else:
+        print("LD not fully initialized yet")
+
+
+def restart_AK():
+    print("Restarting Arknights")
+    run_command(quit_AK, timeout=5)
+    sleep(1)
+    run_command(launch_AK, timeout=5)
 
 
 def capture_screen():
@@ -112,11 +148,11 @@ def click_on_location(point: tuple, delay=0):
     click = [
         "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
         "adb",
-        "--index",
-        "1",
+        "--name",
+        "Arknights_Bot",
         "--command",
         "shell input tap " + str(x) + " " + str(y)
-    ]
+        ]
     run_command(click, timeout=5)
 
 
