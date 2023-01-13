@@ -10,21 +10,27 @@ def get_to_main_menu_after_startup():
     print("Trying to get to main menu after starting")
     click_image("initial_start_button.png", delay=10)
     click_image("login_start_button.png", delay=10)
-    while check_if_on_main_menu() is False:
+    is_on_main_menu = False
+    while not is_on_main_menu:
         sleep(15)
+        is_on_main_menu = check_if_on_main_menu()
 
 
 def return_to_main_menu():
     sleep(3)
-    if check_if_on_main_menu() is False:
+    is_on_main_menu = check_if_on_main_menu()
+    if not is_on_main_menu:
         if locate_image_on_screen("home_button.png", max_tries=0) is not None:
             print("Attempting to return to main menu")
             click_image("home_button.png")
             click_image("home_tab_button.png", delay=1)
+            is_on_main_menu = True
         else:
             print("Failed to return to main menu, restarting Arknights")
             restart_AK()
             get_to_main_menu_after_startup()
+            is_on_main_menu = True
+    return is_on_main_menu
 
 
 def open_terminal():
@@ -34,13 +40,10 @@ def open_terminal():
 
 def open_main_theme_menu():
     print("Trying to open main theme menu")
-    if check_if_on_main_menu():
+    is_on_main_menu = return_to_main_menu()
+    if is_on_main_menu:
         open_terminal()
         click_image("main_theme_button.png", delay=1)
-    # I'm fairly certain there is not a single menu without the home button
-    else:
-        return_to_main_menu()
-        open_main_theme_menu()
 
 
 def go_to_act(act_number):
@@ -71,7 +74,7 @@ def go_to_episode(episode_number):
         10: 0
     }
     clicks = episode_to_clicks[episode_number]
-    act = episode_number // 4
+    act = 0 if episode_number in [1, 2, 3] else (1 if episode_number in range(4, 9) else 2)
     go_to_act(act)
     if clicks == 0:
         print(f"Already in episode {episode_number}")
@@ -81,11 +84,11 @@ def go_to_episode(episode_number):
         click_on_location((982, 663), delay=1)
 
     print("Scrolling to beginning of episode")
-    for i in range(5):
+    for i in range(8):
         scroll("left")
 
-
-def go_to_stage(stage_prefix="", episode_number=1, stage_number=1):
+"""STILL HAVE TO ACCOUNT FOR ROTATIONAL STAGES IE. CE-6"""
+def go_to_stage(stage_prefix="", episode_number=0, stage_number=0):
     go_to_episode(episode_number)
 
     while check_if_stage_on_screen(stage_prefix, episode_number, stage_number) is not True:

@@ -1,5 +1,6 @@
 from arknightsbot.detection.image_rec import *
 from arknightsbot.bot.navigation import *
+from arknightsbot.utils.stage_string_splitter import split_stage_string
 
 
 def start_stage():
@@ -22,7 +23,7 @@ def start_stage():
 
 def wait_for_stage_completion():
     while locate_image_on_screen("exp.png", max_tries=0) is None:
-        print("Waiting on stage completion")
+        print("Waiting on stage completion...")
         sleep(20)
     print("Stage completed")
     click_on_location((1206, 673))
@@ -40,8 +41,9 @@ def refill_sanity(setting, refill_times):
         print("Refilling sanity with all resources")
 
 
-def farm_stage(stage_prefix="", episode_number=-1, stage_number=-1, max_repeats=0, refill=0):
-    go_to_stage(stage_prefix, episode_number, stage_number)
+def farm_stage(stage_string, max_repeats=1, refill_setting=0):
+    prefix, episode, stage = split_stage_string(stage_string)
+    go_to_stage(prefix, episode, stage)
     repeats = 0
     while repeats < max_repeats:
         start_stage()

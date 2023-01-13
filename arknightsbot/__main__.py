@@ -3,10 +3,10 @@ from ldplayer.client import *
 from detection.image_rec import *
 from bot.navigation import *
 from bot.material_farmer import *
-
+from utils.stage_string_splitter import *
 
 def main():
-    farm_stage("", episode_number=1, stage_number=7, max_repeats=5)
+    print(split_stage_string("ce-7"))
 
 
 if __name__ == "__main__":
