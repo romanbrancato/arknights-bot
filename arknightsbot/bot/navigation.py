@@ -1,8 +1,10 @@
+
 from arknightsbot.detection.image_rec import *
 from arknightsbot.ldplayer.client import (
     scroll,
     restart_AK
 )
+
 
 def get_to_main_menu_after_startup():
     print("Trying to get to main menu after starting")
@@ -16,7 +18,7 @@ def return_to_main_menu():
     sleep(3)
     if check_if_on_main_menu() is False:
         if locate_image_on_screen("home_button.png", max_tries=0) is not None:
-            print("Trying to return to main menu")
+            print("Attempting to return to main menu")
             click_image("home_button.png")
             click_image("home_tab_button.png", delay=1)
         else:
@@ -57,7 +59,6 @@ def go_to_act(act_number):
 
 def go_to_episode(episode_number):
     episode_to_clicks = {
-        0: 3,
         1: 2,
         2: 1,
         3: 0,
@@ -80,19 +81,38 @@ def go_to_episode(episode_number):
         click_on_location((982, 663), delay=1)
 
     print("Scrolling to beginning of episode")
-    for i in range(10):
+    for i in range(5):
         scroll("left")
 
 
-# def go_to_stage(stage_number):
+def go_to_stage(stage_prefix="", episode_number=1, stage_number=1):
+    go_to_episode(episode_number)
 
-# #Checks
-#
+    while check_if_stage_on_screen(stage_prefix, episode_number, stage_number) is not True:
+        scroll("right")
+        sleep(2)
+
+    image_path = f"stages\\{episode_number}\\{stage_prefix}{episode_number}-{stage_number}.png"
+    click_image(image_path, delay=2)
+
+
+"""Checks"""
+
+
 def check_if_on_main_menu():
     print("Checking if on main menu")
     if locate_image_on_screen("terminal_button.png", max_tries=0) is not None:
-        print("Is on main menu")
+        print("ON main menu")
         return True
     else:
-        print("Is not on main menu")
+        print("NOT on main menu")
+        return False
+
+
+def check_if_stage_on_screen(stage_prefix, episode_number, stage_number):
+    image_path = f"stages\\{episode_number}\\{stage_prefix}{episode_number}-{stage_number}.png"
+    if locate_image_on_screen(image_path, max_tries=0) is not None:
+        print(f"Found stage {stage_prefix}{episode_number}-{stage_number}")
+        return True
+    else:
         return False

@@ -38,7 +38,7 @@ def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
     # Use minMaxLoc to find the position of the best match
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
-    if max_val > 0.8:
+    if max_val > 0.90:
         # Get the top-left and bottom-right coordinates of the rectangle
         top_left = max_loc
         bottom_right = (top_left[0] + w, top_left[1] + h)
@@ -54,7 +54,7 @@ def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
         locate_image_on_screen(reference, tries + 1, max_tries, delay + 2)
     else:
         print("Could not find " + os.path.basename(reference) + " after " +
-              str(max_tries) + " tries")
+              str(max_tries) + " retries")
         # screen = cv2.imread("detection\\reference_images\\temp\\ss.png")
         # cv2.imshow("Detection Failure", screen)
         # cv2.waitKey(5000)
