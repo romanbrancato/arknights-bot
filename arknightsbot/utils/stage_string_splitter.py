@@ -2,7 +2,7 @@ def split_stage_string(stage_string):
     stage_prefix = ""
     episode = 0
     stage = 0
-    parts = stage_string.split('-')
+    parts = stage_string.rsplit("-",1)
     for char in parts[0]:
         if char.isalpha():
             stage_prefix += char

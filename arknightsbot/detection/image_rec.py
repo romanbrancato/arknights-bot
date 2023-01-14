@@ -2,6 +2,8 @@ import os
 from time import sleep
 import cv2
 import numpy as np
+
+
 from arknightsbot.ldplayer.client import (
     click_on_location,
     capture_screen
@@ -25,15 +27,15 @@ def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
     # Matches the reference image to the screenshot
     result = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
 
-    """For Debug"""
+    # """For Debug"""
     # threshold = 0.8
     # loc = np.where(result >= threshold)
     # for pt in zip(*loc[::-1]):
     #     cv2.rectangle(screen, pt, (pt[0] + w, pt[1] + h), (0, 255, 0), 2)
     #
     # cv2.imshow("Detection Result", screen)
-    # cv2.waitKey(100)
-    """---------"""
+    # cv2.waitKey(3000)
+    # """---------"""
 
     # Use minMaxLoc to find the position of the best match
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
@@ -55,14 +57,11 @@ def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
     else:
         print("Could not find " + os.path.basename(reference) + " after " +
               str(max_tries) + " retries")
-        # screen = cv2.imread("detection\\reference_images\\temp\\ss.png")
-        # cv2.imshow("Detection Failure", screen)
-        # cv2.waitKey(5000)
         return None
 
 
-def click_image(image, delay=0):
-    sleep(delay)
+def click_image(image, delay_before=0):
+    sleep(delay_before)
     point = locate_image_on_screen(image)
     if point is not None:
         click_on_location(point)

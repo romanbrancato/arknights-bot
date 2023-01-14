@@ -142,8 +142,8 @@ def capture_screen():
     run_command(take_screenshot, timeout=5)
 
 
-def click_on_location(point: tuple, delay=0):
-    sleep(delay)
+def click_on_location(point: tuple, delay_before=0, delay_after=0):
+    sleep(delay_before)
     x, y = point
     click = [
         "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
@@ -154,7 +154,7 @@ def click_on_location(point: tuple, delay=0):
         "shell input tap " + str(x) + " " + str(y)
         ]
     run_command(click, timeout=5)
-
+    sleep(delay_after)
 
 def scroll(direction):
     if direction == "left":
