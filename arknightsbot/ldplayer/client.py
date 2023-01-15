@@ -1,5 +1,8 @@
 import subprocess
+import sys
 from time import sleep
+
+from arknightsbot.utils.logger import logger
 
 # Commands to prepare LDplayer for bot
 
@@ -8,7 +11,7 @@ close_LD = [
     "quit",
     "--name",
     "Arknights_Bot"
-    ]
+]
 configure_LD = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "modify",
@@ -20,13 +23,13 @@ configure_LD = [
     "4",
     "--memory",
     "4096"
-    ]
+]
 launch_LD = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "launch",
     "--name",
     "Arknights_Bot"
-    ]
+]
 launch_AK = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "runapp",
@@ -34,7 +37,7 @@ launch_AK = [
     "Arknights_Bot",
     "--packagename",
     "com.YoStarEN.Arknights"
-    ]
+]
 
 is_ld_done_initializing = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
@@ -43,7 +46,7 @@ is_ld_done_initializing = [
     "Arknights_Bot",
     "--command",
     "shell getprop sys.boot_completed"
-    ]
+]
 
 quit_AK = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
@@ -52,7 +55,7 @@ quit_AK = [
     "Arknights_Bot",
     "--packagename",
     "com.YoStarEN.Arknights"
-    ]
+]
 
 # Commands for image recognition
 
@@ -65,7 +68,7 @@ take_screenshot = [
     "Arknights_Bot",
     "--command",
     "shell screencap -p /mnt/shared/Pictures/ss.png"
-    ]
+]
 
 # Commands for navigation
 
@@ -76,7 +79,7 @@ swipe_left = [
     "Arknights_Bot",
     "--command",
     "shell input swipe 600 550 1260 550 500"
-    ]
+]
 swipe_right = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
     "adb",
@@ -84,7 +87,7 @@ swipe_right = [
     "Arknights_Bot",
     "--command",
     "shell input swipe 1260 550 600 550 500"
-    ]
+]
 
 
 def run_command(args: list[str], timeout=0) -> str:
@@ -125,14 +128,14 @@ def start_ld():
 
 def is_ld_initialized():
     if subprocess.run(is_ld_done_initializing, capture_output=True, text=True).stdout.strip() == "1":
-        print("LD initialized, starting Arknights")
+        logger.log("LD initialized, starting Arknights")
         return True
     else:
-        print("LD not fully initialized yet")
+        logger.log("LD not fully initialized yet")
 
 
 def restart_AK():
-    print("Restarting Arknights")
+    logger.log("Restarting Arknights")
     run_command(quit_AK, timeout=5)
     sleep(1)
     run_command(launch_AK, timeout=5)
@@ -152,9 +155,10 @@ def click_on_location(point: tuple, delay_before=0, delay_after=0):
         "Arknights_Bot",
         "--command",
         "shell input tap " + str(x) + " " + str(y)
-        ]
+    ]
     run_command(click, timeout=5)
     sleep(delay_after)
+
 
 def scroll(direction):
     if direction == "left":

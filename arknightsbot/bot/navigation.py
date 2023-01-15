@@ -6,6 +6,7 @@ from arknightsbot.ldplayer.client import (
     scroll,
     restart_AK
 )
+from arknightsbot.utils.logger import logger
 
 
 def get_to_main_menu_after_startup():
@@ -20,12 +21,12 @@ def return_to_main_menu():
     is_on_main_menu = check_if_on_main_menu()
     if not is_on_main_menu:
         if locate_image_on_screen("home_button.png", max_tries=0) is not None:
-            print("Returning to main menu...")
+            logger.log("Returning to main menu...")
             click_image("home_button.png")
             click_image("home_tab_button.png", delay_before=1)
             is_on_main_menu = True
         else:
-            print("Failed to return to main menu, restarting Arknights")
+            logger.log("Failed to return to main menu, restarting Arknights")
             restart_AK()
             get_to_main_menu_after_startup()
             is_on_main_menu = True
@@ -33,11 +34,11 @@ def return_to_main_menu():
 
 
 def open_terminal():
-    print("Trying to open terminal")
+    logger.log("Trying to open terminal")
     click_image("terminal_button.png")
     # To make sure it can get around variable unstable connection pop-ups
+    sleep(2)
     if check_if_in_terminal() is False:
-        sleep(2)
         open_terminal()
 
 
@@ -63,7 +64,7 @@ def go_to_act(act_number):
     }
     open_main_theme_menu()
     clicks = act_to_clicks[act_number]
-    print(f"Going to act {act_number}")
+    logger.log(f"Going to act {act_number}")
     for click in clicks:
         click_on_location(click, delay_before=1)
     click_on_location((957, 360), delay_before=1)
@@ -71,7 +72,7 @@ def go_to_act(act_number):
 
 def go_to_supply_stage(stage_prefix):
     open_supplies_menu()
-    print("Scrolling to beginning of supply stage menu")
+    logger.log("Scrolling to beginning of supply stage menu")
     for i in range(1):
         scroll("left")
 
@@ -83,7 +84,7 @@ def go_to_supply_stage(stage_prefix):
             return
         scroll("right")
     else:
-        print(f"Could not find {stage_prefix} stages. Returning to main menu")
+        logger.log(f"Could not find {stage_prefix} stages. Returning to main menu")
         return_to_main_menu()
 
 
@@ -106,13 +107,13 @@ def go_to_episode(episode_number):
     go_to_act(act)
 
     if clicks == 0:
-        print(f"Already in episode {episode_number}")
+        logger.log(f"Already in episode {episode_number}")
     else:
-        print(f"Going to episode {episode_number}")
+        logger.log(f"Going to episode {episode_number}")
     for i in range(clicks):
         click_on_location((982, 663), delay_before=1)
 
-    print("Scrolling to beginning of episode")
+    logger.log("Scrolling to beginning of episode")
     for i in range(8):
         scroll("left")
 
@@ -134,7 +135,7 @@ def go_to_stage(stage_prefix="", episode_number=0, stage_number=0):
             return
         scroll("right")
     else:
-        print(f"Could not find stage {stage_prefix}{episode_number}-{stage_number}. Returning to main menu")
+        logger.log(f"Could not find stage {stage_prefix}{episode_number}-{stage_number}. Returning to main menu")
         return_to_main_menu()
 
 
@@ -142,27 +143,27 @@ def go_to_stage(stage_prefix="", episode_number=0, stage_number=0):
 
 
 def check_if_on_main_menu():
-    print("Checking if on main menu")
+    logger.log("Checking if on main menu")
     if locate_image_on_screen("terminal_button.png", max_tries=0) is not None:
-        print("ON main menu")
+        logger.log("ON main menu")
         return True
     else:
-        print("NOT on main menu")
+        logger.log("NOT on main menu")
         return False
 
 
 def check_if_in_terminal():
-    print("Checking if in terminal")
+    logger.log("Checking if in terminal")
     if locate_image_on_screen("main_theme_button.png", max_tries=0) is not None:
-        print("IN terminal")
+        logger.log("IN terminal")
         return True
     else:
-        print("NOT in terminal")
+        logger.log("NOT in terminal")
         return False
 
 
 def check_supply_stage_availability(stage_prefix):
-    print("Checking for supply stage availability")
+    logger.log("Checking for supply stage availability")
     current_weekday = datetime.today().strftime("%A")
     availability = {
         "ls": {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"},
@@ -176,10 +177,10 @@ def check_supply_stage_availability(stage_prefix):
         "prd": {"Tuesday", "Wednesday", "Saturday", "Sunday"}
     }
     if current_weekday in availability[stage_prefix]:
-        print(f"{stage_prefix.upper()} stages are open today")
+        logger.log(f"{stage_prefix.upper()} stages are open today")
         return True
     else:
-        print(f"{stage_prefix.upper()} stages are not open today")
+        logger.log(f"{stage_prefix.upper()} stages are not open today")
         return False
 
 
@@ -191,7 +192,7 @@ def check_if_stage_on_screen(stage_prefix, episode_number, stage_number):
 
     image_location = locate_image_on_screen(image_path, max_tries=0)
     if image_location is not None:
-        print(f"Found stage {stage_prefix}{episode_number}-{stage_number}")
+        logger.log(f"Found stage {stage_prefix}{episode_number}-{stage_number}")
         return True, image_location
     else:
         return False, None

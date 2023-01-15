@@ -8,6 +8,7 @@ from arknightsbot.ldplayer.client import (
     click_on_location,
     capture_screen
 )
+from arknightsbot.utils.logger import logger
 
 
 def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
@@ -54,11 +55,11 @@ def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
         return center
 
     elif tries < max_tries:
-        print(os.path.basename(reference) + " not found, retrying after " + str(delay) + " seconds")
+        logger.log(os.path.basename(reference) + " not found, retrying after " + str(delay) + " seconds")
         sleep(delay)
         locate_image_on_screen(reference, tries + 1, max_tries, delay + 2)
     else:
-        print("Could not find " + os.path.basename(reference) + " after " +
+        logger.log("Could not find " + os.path.basename(reference) + " after " +
               str(max_tries) + " retries")
         return None
 
