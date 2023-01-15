@@ -75,7 +75,7 @@ swipe_left = [
     "--name",
     "Arknights_Bot",
     "--command",
-    "shell input swipe 600 10 1260 10 500"
+    "shell input swipe 600 550 1260 550 500"
     ]
 swipe_right = [
     "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
@@ -83,7 +83,7 @@ swipe_right = [
     "--name",
     "Arknights_Bot",
     "--command",
-    "shell input swipe 1260 10 600 10 500"
+    "shell input swipe 1260 550 600 550 500"
     ]
 
 

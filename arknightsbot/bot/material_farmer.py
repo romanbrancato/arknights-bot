@@ -1,4 +1,4 @@
-import sys
+
 from arknightsbot.bot.navigation import *
 from arknightsbot.utils.stage_string_splitter import split_stage_string
 from arknightsbot.utils.material_dictionary import optimal_stage_for_material
@@ -28,12 +28,11 @@ def start_stage(refill):
     elif state == "off":
         print("Turning on auto deploy")
         click_on_location((1066, 605))
-        start_stage()
+        start_stage(refill)
     else:
         print("Auto deploy locked, cannot farm stage.")
         return_to_main_menu()
         sys.exit()
-
 
 
 # If max repeats is None then infinitely farm stage till out of sanity

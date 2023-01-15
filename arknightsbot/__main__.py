@@ -9,7 +9,7 @@ from utils.material_dictionary import *
 
 # Bot assumes that LD instance is named "Arknights_Bot"
 def main():
-    farm_material("orirock_cube", number_needed=3)
+    repeat_stage("ls-6")
 
 
 if __name__ == "__main__":

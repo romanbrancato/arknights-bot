@@ -1,3 +1,4 @@
+import sys
 from datetime import *
 
 from arknightsbot.detection.image_rec import *
@@ -16,11 +17,10 @@ def get_to_main_menu_after_startup():
 
 
 def return_to_main_menu():
-    sleep(3)
     is_on_main_menu = check_if_on_main_menu()
     if not is_on_main_menu:
         if locate_image_on_screen("home_button.png", max_tries=0) is not None:
-            print("Attempting to return to main menu")
+            print("Returning to main menu...")
             click_image("home_button.png")
             click_image("home_tab_button.png", delay_before=1)
             is_on_main_menu = True
@@ -34,13 +34,16 @@ def return_to_main_menu():
 
 def open_terminal():
     print("Trying to open terminal")
-    click_image("terminal_button.png", delay_before=1)
+    click_image("terminal_button.png")
+    # To make sure it can get around variable unstable connection pop-ups
+    if check_if_in_terminal() is False:
+        sleep(2)
+        open_terminal()
 
 
 def open_main_theme_menu():
     is_on_main_menu = return_to_main_menu()
     if is_on_main_menu:
-        print("Trying to open main theme menu")
         open_terminal()
         click_image("main_theme_button.png", delay_before=1)
 
@@ -48,14 +51,8 @@ def open_main_theme_menu():
 def open_supplies_menu():
     is_on_main_menu = return_to_main_menu()
     if is_on_main_menu:
-        print("Trying to open supplies menu")
         open_terminal()
         click_image("supplies_button.png", delay_before=1)
-
-
-def go_to_supply_stage(stage_prefix):
-    open_supplies_menu()
-    click_image(f"{stage_prefix}.png", delay_before=1)
 
 
 def go_to_act(act_number):
@@ -72,6 +69,24 @@ def go_to_act(act_number):
     click_on_location((957, 360), delay_before=1)
 
 
+def go_to_supply_stage(stage_prefix):
+    open_supplies_menu()
+    print("Scrolling to beginning of supply stage menu")
+    for i in range(1):
+        scroll("left")
+
+    for _ in range(5):
+        sleep(2)
+        is_true, image_location = check_menu_for_supply_stage(stage_prefix)
+        if is_true:
+            click_on_location(image_location)
+            return
+        scroll("right")
+    else:
+        print(f"Could not find {stage_prefix} stages. Returning to main menu")
+        return_to_main_menu()
+
+
 def go_to_episode(episode_number):
     episode_to_clicks = {
         1: 2,
@@ -85,9 +100,11 @@ def go_to_episode(episode_number):
         9: 1,
         10: 0
     }
+
     clicks = episode_to_clicks[episode_number]
     act = 0 if episode_number in [1, 2, 3] else (1 if episode_number in range(4, 9) else 2)
     go_to_act(act)
+
     if clicks == 0:
         print(f"Already in episode {episode_number}")
     else:
@@ -105,21 +122,20 @@ def go_to_stage(stage_prefix="", episode_number=0, stage_number=0):
         go_to_episode(episode_number)
     elif check_supply_stage_availability(stage_prefix):
         go_to_supply_stage(stage_prefix)
+    else:
+        return_to_main_menu()
+        sys.exit()
 
     for _ in range(10):
-        if check_if_stage_on_screen(stage_prefix, episode_number, stage_number):
-            break
-        scroll("right")
         sleep(2)
+        is_true, image_location = check_if_stage_on_screen(stage_prefix, episode_number, stage_number)
+        if is_true:
+            click_on_location(image_location)
+            return
+        scroll("right")
     else:
-        raise Exception(f"Could not find stage {stage_prefix}{episode_number}-{stage_number}")
-
-    if episode_number != 0:
-        image_path = f"stages\\{episode_number}\\{stage_prefix}{episode_number}-{stage_number}.png"
-    else:
-        image_path = f"stages\\{stage_prefix}\\{stage_prefix}{episode_number}-{stage_number}.png"
-
-    click_image(image_path)
+        print(f"Could not find stage {stage_prefix}{episode_number}-{stage_number}. Returning to main menu")
+        return_to_main_menu()
 
 
 """Checks"""
@@ -132,6 +148,16 @@ def check_if_on_main_menu():
         return True
     else:
         print("NOT on main menu")
+        return False
+
+
+def check_if_in_terminal():
+    print("Checking if in terminal")
+    if locate_image_on_screen("main_theme_button.png", max_tries=0) is not None:
+        print("IN terminal")
+        return True
+    else:
+        print("NOT in terminal")
         return False
 
 
@@ -158,12 +184,22 @@ def check_supply_stage_availability(stage_prefix):
 
 
 def check_if_stage_on_screen(stage_prefix, episode_number, stage_number):
-    if episode_number != 0:
-        image_path = f"stages\\{episode_number}\\{stage_prefix}{episode_number}-{stage_number}.png"
-    else:
+    if episode_number == 0:
         image_path = f"stages\\{stage_prefix}\\{stage_prefix}{episode_number}-{stage_number}.png"
-    if locate_image_on_screen(image_path, max_tries=0) is not None:
-        print(f"Found stage {stage_prefix}{episode_number}-{stage_number}")
-        return True
     else:
-        return False
+        image_path = f"stages\\{episode_number}\\{stage_prefix}{episode_number}-{stage_number}.png"
+
+    image_location = locate_image_on_screen(image_path, max_tries=0)
+    if image_location is not None:
+        print(f"Found stage {stage_prefix}{episode_number}-{stage_number}")
+        return True, image_location
+    else:
+        return False, None
+
+
+def check_menu_for_supply_stage(stage_prefix):
+    image_location = locate_image_on_screen(f"{stage_prefix}.png", max_tries=0)
+    if image_location is not None:
+        return True, image_location
+    else:
+        return False, None

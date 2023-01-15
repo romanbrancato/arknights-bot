@@ -22,7 +22,10 @@ def locate_image_on_screen(reference, tries=0, max_tries=3, delay=3):
     image = cv2.imread(reference_path)
 
     # Get dimensions of reference image
-    h, w = image.shape[0], image.shape[1]
+    try:
+        h, w = image.shape[0], image.shape[1]
+    except:
+        raise Exception("Image not found in given path.")
 
     # Matches the reference image to the screenshot
     result = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
