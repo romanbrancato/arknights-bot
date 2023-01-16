@@ -1,19 +1,19 @@
 import subprocess
-import sys
 from time import sleep
-
 from arknightsbot.utils.logger import logger
 
 # Commands to prepare LDplayer for bot
 
+file_path = "\\LDPlayer\\LDPlayer9\\dnconsole.exe"
+
 close_LD = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "quit",
     "--name",
     "Arknights_Bot"
 ]
 configure_LD = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "modify",
     "--name",
     "Arknights_Bot",
@@ -25,13 +25,13 @@ configure_LD = [
     "4096"
 ]
 launch_LD = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "launch",
     "--name",
     "Arknights_Bot"
 ]
 launch_AK = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "runapp",
     "--name",
     "Arknights_Bot",
@@ -40,7 +40,7 @@ launch_AK = [
 ]
 
 is_ld_done_initializing = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "adb",
     "--name",
     "Arknights_Bot",
@@ -49,7 +49,7 @@ is_ld_done_initializing = [
 ]
 
 quit_AK = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "killapp",
     "--name",
     "Arknights_Bot",
@@ -62,7 +62,7 @@ quit_AK = [
 # Takes a screenshot of emulator window and saves it into the shared folder
 # Using this method so bot can run in background behind other windows despite the writes to disk
 take_screenshot = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "adb",
     "--name",
     "Arknights_Bot",
@@ -73,7 +73,7 @@ take_screenshot = [
 # Commands for navigation
 
 swipe_left = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "adb",
     "--name",
     "Arknights_Bot",
@@ -81,7 +81,7 @@ swipe_left = [
     "shell input swipe 600 550 1260 550 500"
 ]
 swipe_right = [
-    "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+    file_path,
     "adb",
     "--name",
     "Arknights_Bot",
@@ -149,7 +149,7 @@ def click_on_location(point: tuple, delay_before=0, delay_after=0):
     sleep(delay_before)
     x, y = point
     click = [
-        "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe",
+        file_path,
         "adb",
         "--name",
         "Arknights_Bot",

@@ -1,4 +1,14 @@
 def optimal_stage_for_material(material):
+    """
+    Finds the optimal stages to farm a material
+    References: https://gamepress.gg/arknights/sites/arknights/files/2022-10/BestFarmStagesEp10.png
+
+            Parameters:
+                    material (string): A string containing the material name
+
+            Returns:
+                    optimal_stages_list: A list of strings of stage names
+    """
     materials_to_stages = {
         "ester": ["s2-7"],
         "sugar substitute": ["s2-6"],
