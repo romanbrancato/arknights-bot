@@ -1,15 +1,11 @@
-from utils.logger import *
-from ldplayer.client import *
-from detection.image_rec import *
-from bot.navigation import *
-from bot.material_farmer import *
-from utils.stage_string_splitter import *
+from arknightsbot.bot.material_farmer import repeat_stage
+from arknightsbot.bot.navigation import return_to_main_menu
 from utils.material_dictionary import *
-from interface import gui
+
 
 # Bot assumes that LD instance is named "Arknights_Bot" and Arknights is opened
 def main():
-    gui.start_gui()
+    print(optimal_stage_for_material(calculate_material_equivalency("orirock cube", 1)))
 
 
 if __name__ == "__main__":

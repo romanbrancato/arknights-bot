@@ -5,7 +5,6 @@ from arknightsbot.ldplayer.client import (
     scroll,
     restart_AK
 )
-from arknightsbot.utils.logger import logger
 
 
 def get_to_main_menu_after_startup():
@@ -165,7 +164,8 @@ def go_to_stage(stage_prefix="", episode_number=0, stage_number=0):
             return
         scroll("right")
     else:
-        logger.log(f"Could not find stage {stage_prefix}{episode_number}-{stage_number}")
+        logger.log(f"Could not find stage {stage_prefix}{episode_number}-{stage_number}. Either stage image is not "
+                   f"recognized or stage is not unlocked.")
         return_to_main_menu()
 
 

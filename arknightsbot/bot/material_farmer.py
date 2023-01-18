@@ -1,9 +1,6 @@
 from arknightsbot.bot.navigation import *
 from arknightsbot.utils.stage_string_splitter import split_stage_string
-from arknightsbot.utils.material_dictionary import optimal_stage_for_material
-
-
-def start_stage(refill):
+def handle_stage_start(refill):
     """
     Attempts to start the stage through a series of clicks.
 
@@ -36,7 +33,7 @@ def start_stage(refill):
     elif state == "off":
         logger.log("Turning on auto deploy")
         click_on_location((1066, 605))
-        start_stage(refill)
+        handle_stage_start(refill)
     else:
         logger.log("Auto deploy locked, cannot farm stage")
         return_to_main_menu()
@@ -59,7 +56,7 @@ def repeat_stage(stage_string=None, max_repeats=None, refill=False):
         go_to_stage(prefix, episode, stage)
     repeats = 0
     while max_repeats is None or repeats < max_repeats:
-        if start_stage(refill) is not None:
+        if handle_stage_start(refill) == "no sanity":
             break
         check_for_stage_completion()
         # Click center of screen to return to stage screen
@@ -69,30 +66,8 @@ def repeat_stage(stage_string=None, max_repeats=None, refill=False):
     logger.log(f"Stage repeated {repeats} times")
     return_to_main_menu()
 
+#def handle_stage_end():
 
-def farm_material(material, number_needed, refill=False):
-    """
-    Repeats a stage.
-
-            Parameters:
-                    material (str): A string containing the full name of the desired material
-                    number_needed (int): An int containing the desired number of material
-                    refill (bool): True if refilling sanity, False if not refilling sanity
-    """
-    optimal_stages_list = optimal_stage_for_material(material)
-    """REWORK TO ALLOW USER TO CHOOSE WHICH STAGE TO FARM, CURRENTLY JUST USING FIRST CHOICE"""
-    prefix, episode, stage_number = split_stage_string(optimal_stages_list[0])
-    go_to_stage(prefix, episode, stage_number)
-    number = 0
-    while number < number_needed:
-        if start_stage(refill) is not None:
-            break
-        check_for_stage_completion()
-        number += check_for_material_drops(material)
-        # Click center of screen to return to stage screen
-        click_on_location((640, 360), delay_after=2)
-    logger.log(f"Farmed {number} {material}")
-    return_to_main_menu()
 
 
 """Checkers"""
