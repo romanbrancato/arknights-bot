@@ -5,7 +5,7 @@ from utils.material_dictionary import *
 
 # Bot assumes that LD instance is named "Arknights_Bot" and Arknights is opened
 def main():
-    print(optimal_stage_for_material(calculate_material_equivalency("orirock cube", 1)))
+    print(optimal_stage_for_material(calculate_material_equivalency("grindstone pentahydrate", 10)))
 
 
 if __name__ == "__main__":
