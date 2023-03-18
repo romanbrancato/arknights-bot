@@ -1,5 +1,7 @@
 from arknightsbot.bot.navigation import *
 from arknightsbot.utils.stage_string_splitter import split_stage_string
+
+
 def handle_stage_start(refill):
     """
     Attempts to start the stage through a series of clicks.
@@ -40,7 +42,7 @@ def handle_stage_start(refill):
         sys.exit()
 
 
-def repeat_stage(stage_string=None, max_repeats=None, refill=False):
+def repeat_stage(stage_string=None, max_repeats=None, refill=False, target_material=None, target_needed=0):
     """
     Repeats a stage.
 
@@ -55,18 +57,22 @@ def repeat_stage(stage_string=None, max_repeats=None, refill=False):
         prefix, episode, stage = split_stage_string(stage_string)
         go_to_stage(prefix, episode, stage)
     repeats = 0
+    total_drops = 0
     while max_repeats is None or repeats < max_repeats:
         if handle_stage_start(refill) == "no sanity":
             break
         check_for_stage_completion()
+        if target_material is not None:
+            total_drops += check_for_material_drops(target_material)
+            if target_needed == total_drops:
+                click_on_location((640, 360), delay_after=2)
+                break
         # Click center of screen to return to stage screen
         click_on_location((640, 360), delay_after=2)
         repeats += 1
 
     logger.log(f"Stage repeated {repeats} times")
     return_to_main_menu()
-
-#def handle_stage_end():
 
 
 
@@ -98,6 +104,9 @@ def check_for_stage_completion():
     """
     logger.log("Waiting on stage completion...")
     while locate_image_on_screen("exp.png") is None:
+        if locate_image_on_screen("level_up.png") is not None:
+            click_on_location((640, 360), delay_after=1)
+            break
         sleep(20)
     logger.log("Stage completed")
     return True

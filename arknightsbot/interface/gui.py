@@ -22,7 +22,7 @@ farm_queue = []
 def start_button_event():
     if start_button.cget("text") == "Start":
         start_button.configure(text="Pause")
-
+        print(farm_queue)
     else:
         start_button.configure(text="Start")
 
